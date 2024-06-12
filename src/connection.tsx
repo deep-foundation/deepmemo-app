@@ -1,13 +1,19 @@
-import { Box, Button, Card, CardBody, CardHeader, Code, FormControl, FormLabel, HStack, Heading, Input, SimpleGrid } from "@chakra-ui/react";
+import { Box, Button, Code, FormControl, FormLabel, IconButton, Input, SimpleGrid } from "@chakra-ui/react";
 import { AutoGuest } from "@deep-foundation/deepcase/imports/auto-guest";
 import { useDeep } from "@deep-foundation/deeplinks/imports/client";
-import { useState } from "react";
+import { AnimatePresence, motion, useAnimationControls } from "framer-motion";
 import { useTranslation } from "next-i18next";
+import { useEffect, useState } from "react";
+import { variantsSliding } from "./animation-variants";
+import { useAnimationContext } from "./context";
 import { useDeepPath, useDeepToken } from "./provider";
+import { Discord } from "../imports/discord-logo";
 
 export function Connection() {
   const { t } = useTranslation();
   const deep = useDeep();
+  const { state, onPermission } = useAnimationContext();
+  const control = useAnimationControls();
 
   const [path, setPath] = useDeepPath();
   const [token, setToken] = useDeepToken();
@@ -30,15 +36,46 @@ export function Connection() {
   // });
 
   const [autoGuest, setAutoGuest] = useState(false);
-
-  return (
-    <Card maxWidth={'100%'}>
-      <CardHeader>
-        <Heading>
+  useEffect(() => {
+    if (state === 'connection') {
+      control.start("show");
+    } else {
+      control.start("hide");
+    }
+  }, [control, state]);
+  console.log('click', state);
+  return (<AnimatePresence>
+      <Box 
+        key='1'
+        as={motion.div} 
+        onTapStart={(e) => {
+          onPermission(); 
+        }} 
+        onClick={() => {
+          onPermission(); 
+        }} 
+        sx={{ 
+          width: '100vw',
+          height: '100vh',
+          pos: 'relative',
+          overflow: 'hidden', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          flexDirection: 'column',
+          padding: '0.5rem',
+        }}
+        initial={{
+          display: 'none',
+          opacity: 0,
+          x: '100%'
+        }}
+        animate={control}
+        variants={variantsSliding}
+      >
+        <Box textStyle='h1' mb='1rem'>
           {t('connection')}
-        </Heading>
-      </CardHeader>
-      <CardBody>
+        </Box>
+        
         <FormControl id="gql-path">
           <FormLabel>GraphQL Path</FormLabel>
           <Input type="text"
@@ -53,6 +90,9 @@ export function Connection() {
             onChange={(e) => _setToken(e.target.value)}
           />
         </FormControl>
+        <IconButton 
+          aria-label='Discord deep server' icon={<Discord />}
+          onClick={() => {console.log({ _token, _path })}} />
         <SimpleGrid pt={3} spacing={3} minChildWidth='150px'>
           <Button onClick={() => {
             console.log({ _token, _path });
@@ -74,8 +114,7 @@ export function Connection() {
           </Button>
           {!!autoGuest && <AutoGuest><></></AutoGuest>}
         </SimpleGrid>
-      </CardBody>
-      <CardBody>
+      
         <Code wordBreak={'break-all'}>useDeepPath()[0] // {path || ''}</Code>
         <Code wordBreak={'break-all'}>useDeepToken()[0] // {token || ''}</Code>
         <Code wordBreak={'break-all'}>useDeep() // {typeof(deep)}</Code>
@@ -83,7 +122,7 @@ export function Connection() {
           <Code wordBreak={'break-all'}>useDeep().linkId // {deep?.linkId}</Code>
           <Code wordBreak={'break-all'}>useDeep().token // {deep?.token}</Code>
         </Box>}
-      </CardBody>
-    </Card>
+      </Box>
+    </AnimatePresence>
   );
 }
