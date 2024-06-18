@@ -1,5 +1,6 @@
 {
   "connection": "Connection to Deep",
+  "submit": "submit",
   "sdk": "Deep SDK",
   "sdk-description": "Minimalistic template/boilerplate for any project."
 }

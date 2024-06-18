@@ -1,4 +1,5 @@
-import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
+import { IconButton, extendTheme, type ThemeConfig } from '@chakra-ui/react';
+import type { StyleFunctionProps } from '@chakra-ui/styled-system';
 
 const config: ThemeConfig = {
   initialColorMode: 'light',
@@ -15,18 +16,43 @@ const themeChakra = extendTheme({
     colors: {
       error: 'red.500',
       lightBg: '#83cfff',
-      darkBg: '#060608',
+      darkColor: '#060608',
+      hoverLightBg: '#4f93be',
+      hoverDarkColor: '#272755',
       lightTxt: '#DADADA',
-      darkTxt: '#29292f',
       discord: '#5562ea',
       text: {
-        default: 'darkTxt',
+        default: 'darkColor',
         _dark: 'lightTxt',
       },
       bg: {
         default: 'lightBg', 
-        _dark: 'darkBg',
-      }
+        _dark: 'darkColor',
+      },
+      bgRevert: {
+        default: 'darkColor', 
+        _dark: 'lightBg',
+      },
+      switchTrackChecked: {
+        default: 'darkColor',
+        _dark: 'lightBg',
+      },
+      switchTrackUnchecked: {
+        default: 'lightBg',
+        _dark: 'darkColor',
+      },
+      switchThumbUnchecked: {
+        default: 'darkColor',
+        _dark: 'lightBg',
+      },
+      switchThumbChecked: {
+        default: 'lightBg',
+        _dark: 'darkColor',
+      },
+      switchModeBorder: {
+        default: 'darkColor',
+        _dark: 'lightBg',
+      },
     },
     
   },
@@ -55,10 +81,10 @@ const themeChakra = extendTheme({
       fontSize: '0.8rem',
     },
     h1: {
-      fontSize: '2.25rem',
-      fontWeight: 'semibold',
+      fontSize: '2rem',
       lineHeight: '110%',
-      letterSpacing: '-1%',
+      letterSpacing: '2px',
+      fontWeight: 600,
     },
     h3: {
       fontSize: '1.5rem',
@@ -70,14 +96,82 @@ const themeChakra = extendTheme({
   components: {
     Button: {
       variants: {
-        unstyled: {
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '1rem 0',
-        },
+        solid: (props: StyleFunctionProps) => ({
+          borderRadius: '3rem',
+          background: props.colorMode === 'dark' ?  'lightBg' : 'darkColor',
+          color: props.colorMode === 'dark' ? 'darkColor' : 'lightTxt',
+          _hover: {
+            background: props.colorMode === 'dark' ?  'hoverLightBg' : 'hoverDarkColor',
+          }
+        }),
+        outline: (props: StyleFunctionProps) => ({
+          borderRadius: '3rem',
+          borderColor: props.colorMode === 'dark' ? 'lightBg' : 'darkColor',
+          color: props.colorMode === 'dark' ? 'lightTxt' : 'darkColor',
+          _hover: {
+            background: props.colorMode === 'dark' ?  'hoverLightBg' : 'hoverDarkColor',
+          }
+        }),
       },
     },
+    FormLabel: {
+      baseStyle: {
+        fontSize: '0.9rem',
+        fontWeight: 600,
+        marginBottom: '0.2rem',
+      },
+    },
+    Input: {
+      baseStyle: {
+        
+      },
+      variants: {
+        outline: (props: StyleFunctionProps) => ({
+          field: {
+            borderColor: props.colorMode === 'dark' ? '#9a9a9a' : '#darkColor',
+            borderWidth: '1px',
+            borderRadius: '0.5rem',
+            fontSize: '0.8rem',
+            fontWeight: 'bold',
+            _hover: {
+              borderColor: props.colorMode === 'dark' ? '#9a9a9a' : '#darkColor',
+              borderWidth: '2px',
+            },
+            _focus: {
+              borderColor: props.colorMode === 'dark' ? '#ffffff' : 'darkColor',
+              borderWidth: '2px',
+            },
+            _disabled: {
+              borderColor: props.colorMode === 'dark' ? '#2b2b2b' : '#bbbbbb',
+            },
+          },
+        }),
+      }
+    },
+    Switch: {
+      baseStyle: {
+        track: {
+          bg: 'switchTrackUnchecked',
+          borderColor: 'switchModeBorder',
+          borderWidth: '1px',
+          _checked: {
+            bg: 'switchTrackChecked',
+          },
+        },
+        thumb: {
+          bg: 'switchThumbUnchecked',
+          _checked: {
+            bg: 'switchThumbChecked',
+          },
+          _disabled: {
+            bg: 'grey.200',
+          },
+        }
+      },
+      defaultProps: {
+        size:'md',
+      },
+    }
   }
 })
 

@@ -43,17 +43,16 @@ export function Connection() {
       control.start("hide");
     }
   }, [control, state]);
-  console.log('click', state);
   return (<AnimatePresence>
       <Box 
         key='1'
         as={motion.div} 
-        onTapStart={(e) => {
-          onPermission(); 
-        }} 
-        onClick={() => {
-          onPermission(); 
-        }} 
+        // onTapStart={(e) => {
+        //   onPermission(); 
+        // }} 
+        // onClick={() => {
+        //   onPermission(); 
+        // }} 
         sx={{ 
           width: '100vw',
           height: '100vh',
@@ -72,36 +71,51 @@ export function Connection() {
         animate={control}
         variants={variantsSliding}
       >
-        <Box textStyle='h1' mb='1rem'>
+        <Box textStyle='h1' mb='1.5rem' textAlign='center' px='1rem'>
           {t('connection')}
         </Box>
+
+        <IconButton 
+          width='100%'
+          bg='discord'
+          borderRadius='3rem'
+          mb='2.5rem'
+          aria-label='Discord deep server' icon={<Discord />}
+          onClick={(e) => {
+            e.stopPropagation();
+            console.log({ _token, _path })
+          }} 
+        />
         
-        <FormControl id="gql-path">
-          <FormLabel>GraphQL Path</FormLabel>
+        <FormControl id="gql-path" sx={{mb: '0.5rem'}}>
+          <FormLabel>graphQL path</FormLabel>
           <Input type="text"
             defaultValue={path}
             onChange={(e) => _setPath(e.target.value)}
           />
         </FormControl>
-        <FormControl id="token" >
-          <FormLabel>Token</FormLabel>
+        <FormControl id="token" sx={{mb: '1rem'}}>
+          <FormLabel>token</FormLabel>
           <Input type="text"
             defaultValue={token}
             onChange={(e) => _setToken(e.target.value)}
           />
         </FormControl>
-        <IconButton 
-          aria-label='Discord deep server' icon={<Discord />}
-          onClick={() => {console.log({ _token, _path })}} />
-        <SimpleGrid pt={3} spacing={3} minChildWidth='150px'>
-          <Button onClick={() => {
+        <Button 
+          variant='solid'
+          onClick={() => {
             console.log({ _token, _path });
             if(!_path || !_token) return;
             setToken(_token);
             setPath(_path);
-          }}>
-            Submit
-          </Button>
+            onPermission();
+          }}
+          width='100%'
+        >
+          {t('submit')}
+        </Button>
+        
+        {/* <SimpleGrid pt={3} spacing={3} minChildWidth='150px'>
           <Button onClick={() => {
             setToken(null);
           }}>
@@ -117,11 +131,11 @@ export function Connection() {
       
         <Code wordBreak={'break-all'}>useDeepPath()[0] // {path || ''}</Code>
         <Code wordBreak={'break-all'}>useDeepToken()[0] // {token || ''}</Code>
-        <Code wordBreak={'break-all'}>useDeep() // {typeof(deep)}</Code>
-        {!!deep && <Box>
+        <Code wordBreak={'break-all'}>useDeep() // {typeof(deep)}</Code> */}
+        {/* {!!deep && <Box>
           <Code wordBreak={'break-all'}>useDeep().linkId // {deep?.linkId}</Code>
           <Code wordBreak={'break-all'}>useDeep().token // {deep?.token}</Code>
-        </Box>}
+        </Box>} */}
       </Box>
     </AnimatePresence>
   );

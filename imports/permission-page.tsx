@@ -64,16 +64,23 @@ export const PermissionPage = memo(() => {
         animate={control}
         variants={variantsSliding}
       >
-        <Box p={4}>
+        <Box display='flex' justifyContent='center' flexDirection='column' w='100%' h='100%' p={4}
+          sx={{
+            '& > *:not(:last-child)': {
+              mb: '1rem',
+            }
+          }}
+        >
           <Syncing title={'Enable syncing with deep backend?'} value={saver} setValue={setSaver} />
           <FormControl display='flex' alignItems='center'>
             <FormLabel htmlFor='syncing' mb='0'>
               ContainerId
             </FormLabel>
             <Input
+              type='number'
               placeholder={`${deep?.linkId}`}
               value={containerId} onChange={(e) => setContainerId(e.target.value)}
-              w={'10em'}
+              w='100%'
             />
           </FormControl>
           <SaverProvider onSave={({ Type, id, object, mode, promise }) => {
@@ -86,9 +93,11 @@ export const PermissionPage = memo(() => {
             <DeviceProvider saver={saver && deviceSaver} containerId={containerId} interval={deviceInterval}>
               <GeolocationProvider saver={saver && geolocationSaver} interval={geolocationInterval}>
                 <VoiceProvider saver={saver}>
-                  <VoiceView />
+                  <VoiceView 
+                    syncingSwitch={<Syncing title={'Enable voice syncing with deep backend?'} value={deviceSaver} setValue={setDeviceSaver} />}
+                  />
+                  
                   <Interval value={deviceInterval} onChange={setDeviceInterval} />
-                  <Syncing title={'Enable voice syncing with deep backend?'} value={deviceSaver} setValue={setDeviceSaver} />
                   <DeviceView interval={deviceInterval} />
                   <Interval value={geolocationInterval} onChange={setGeolocationInterval} />
                   <Syncing title={'Enable geolocation syncing with deep backend?'} value={geolocationSaver} setValue={setGeolocationSaver} />
