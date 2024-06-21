@@ -13,7 +13,11 @@ const AnimationContext = createContext<AnimationContextType | undefined>(undefin
 export const AnimationProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, setState] = useState('start');
   const onConnection = () => {
-    setState('connection');
+    // Устанавливаем таймер на 3 секунды
+    const timerId = setTimeout(() => {
+      setState('connection');
+      clearTimeout(timerId); // Очищаем таймер
+    }, 10000);
   };
   const onPermission = () => {
     setState('permissions')

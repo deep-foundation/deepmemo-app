@@ -59,7 +59,7 @@ const themeChakra = extendTheme({
   styles: {
     global: () => ({
       body: {
-        bg: 'bg',
+        bg: 'darkColor',
         color: 'text',
         lineHeight: 'base',
       },

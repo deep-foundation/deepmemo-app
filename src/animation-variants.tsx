@@ -1,46 +1,39 @@
-import { Box } from "@chakra-ui/react";
+import { Box, background } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { memo, useState } from "react";
 
+const transitionContent = {
+  type: "spring", stiffness: 300, damping: 30, delay: 1.35, duration: 0.4
+}
 const transition = {
-  x: { type: "spring", stiffness: 300, damping: 30 },
-  opacity: { duration: 0.2 },
-  display: { delay: 0.3 }
+  type: "spring", stiffness: 300, damping: 30,
+  duration: 1.5,
 }
 export const variantsSliding = {
-  show: {
-    x: '0%',
-    opacity: 1,
+  show: (mode) => ({
+    background: mode === 'dark'? ['#3d6b87', '#83cfff', '#060608'] : ['#060608', '#3d6b87', '#83cfff'],
+    rotateY: [180, 0],
     display: 'flex',
     transition: transition
-    },
-  hide: {
-    x: '-100%',
-    opacity: 0,
+  }),
+  hide: (mode) => ({
+    background: mode === 'dark'? ['#060608', '#83cfff', '#3d6b87'] : ['#83cfff', '#3d6b87', '#060608'],
+    rotateY: [0, 180],
     display: 'none',
-    transition: transition
-  },
+    transition: transition,
+  }),
 }
-// export const variantsSliding = {
-//   enter: (direction: number) => {
-//     return {
-//       x: direction > 0 ? 1000 : -1000,
-//       opacity: 0
-//     };
-//   },
-//   center: {
-//     zIndex: 1,
-//     x: 0,
-//     opacity: 1
-//   },
-//   exit: (direction: number) => {
-//     return {
-//       zIndex: 0,
-//       x: direction < 0 ? 1000 : -1000,
-//       opacity: 0
-//     };
-//   }
-// }
+export const contentAnimation = {
+  show: {
+    opacity: [0.1, 0.5, 1],
+    transition: transitionContent
+  },
+  hide: {
+    opacity: 0,
+    transition: transitionContent
+  },
+  
+}
 
 const swipeConfidenceThreshold = 10000;
 const swipePower = (offset: number, velocity: number) => {

@@ -1,12 +1,12 @@
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useMemo, useState, useEffect } from "react";
-import { I18nextProvider } from "react-i18next";
 import axios from 'axios';
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useEffect, useState } from "react";
+import { I18nextProvider } from "react-i18next";
 
 import { createConfig } from "next-i18next/dist/commonjs/config/createConfig";
 import createClient from 'next-i18next/dist/commonjs/createClient';
-import i18nConfig from '../next-i18next.config';
 import { useRouter } from "next/router";
+import i18nConfig from '../next-i18next.config';
 
 export async function i18nGetStaticProps({ locale }) {
   return +(process?.env?.NEXT_PUBLIC_I18N_DISABLE || 0) ? { props: {} } : {

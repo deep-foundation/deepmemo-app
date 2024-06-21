@@ -52,61 +52,60 @@ export const PermissionPage = memo(() => {
           width: '100vw',
           height: '100vh',
           pos: 'relative',
-          overflow: 'hidden', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
+          overflow: 'hidden',  
         }}
         initial={{
-          display: 'none',
-          opacity: 0,
-          x: '100%'
+          rotateY: 180,
         }}
         animate={control}
         variants={variantsSliding}
       >
-        <Box display='flex' justifyContent='center' flexDirection='column' w='100%' h='100%' p={4}
-          sx={{
-            '& > *:not(:last-child)': {
-              mb: '1rem',
-            }
-          }}
-        >
-          <Syncing title={'Enable syncing with deep backend?'} value={saver} setValue={setSaver} />
-          <FormControl display='flex' alignItems='center'>
-            <FormLabel htmlFor='syncing' mb='0'>
-              ContainerId
-            </FormLabel>
-            <Input
-              type='number'
-              placeholder={`${deep?.linkId}`}
-              value={containerId} onChange={(e) => setContainerId(e.target.value)}
-              w='100%'
-            />
-          </FormControl>
-          <SaverProvider onSave={({ Type, id, object, mode, promise }) => {
-            toast.promise(promise, {
-              success: { title: `Saved ${mode} #${id || '?'} of type (#${Type}) to deep`, isClosable: true },
-              error: (e) => ({ title: `Error with saving ${mode} #${id || '?'} of type (#${Type}) to deep`, description: e.toString(), isClosable: true }),
-              loading: { title: `Saving ${mode} #${id || '?'} of type (#${Type}) to deep`, isClosable: true },
-            })
-          }}>
-            <DeviceProvider saver={saver && deviceSaver} containerId={containerId} interval={deviceInterval}>
-              <GeolocationProvider saver={saver && geolocationSaver} interval={geolocationInterval}>
-                <VoiceProvider saver={saver}>
-                  <VoiceView 
-                    syncingSwitch={<Syncing title={'Enable voice syncing with deep backend?'} value={deviceSaver} setValue={setDeviceSaver} />}
-                  />
-                  
-                  <Interval value={deviceInterval} onChange={setDeviceInterval} />
-                  <DeviceView interval={deviceInterval} />
-                  <Interval value={geolocationInterval} onChange={setGeolocationInterval} />
-                  <Syncing title={'Enable geolocation syncing with deep backend?'} value={geolocationSaver} setValue={setGeolocationSaver} />
-                  <GeolocationView interval={geolocationInterval} />
-                </VoiceProvider>
-              </GeolocationProvider>
-            </DeviceProvider>
-          </SaverProvider>
-        </Box>
+        <AnimatePresence>
+
+          <Box display='flex' justifyContent='center' flexDirection='column' w='100%' h='100%' p={4}
+            sx={{
+              '& > *:not(:last-child)': {
+                mb: '1rem',
+              }
+            }}
+          >
+            <Syncing title={'Enable syncing with deep backend?'} value={saver} setValue={setSaver} />
+            <FormControl display='flex' alignItems='center'>
+              <FormLabel htmlFor='syncing' mb='0'>
+                ContainerId
+              </FormLabel>
+              <Input
+                type='number'
+                placeholder={`${deep?.linkId}`}
+                value={containerId} onChange={(e) => setContainerId(e.target.value)}
+                w='100%'
+              />
+            </FormControl>
+            <SaverProvider onSave={({ Type, id, object, mode, promise }) => {
+              toast.promise(promise, {
+                success: { title: `Saved ${mode} #${id || '?'} of type (#${Type}) to deep`, isClosable: true },
+                error: (e) => ({ title: `Error with saving ${mode} #${id || '?'} of type (#${Type}) to deep`, description: e.toString(), isClosable: true }),
+                loading: { title: `Saving ${mode} #${id || '?'} of type (#${Type}) to deep`, isClosable: true },
+              })
+            }}>
+              <DeviceProvider saver={saver && deviceSaver} containerId={containerId} interval={deviceInterval}>
+                <GeolocationProvider saver={saver && geolocationSaver} interval={geolocationInterval}>
+                  <VoiceProvider saver={saver}>
+                    <VoiceView 
+                      syncingSwitch={<Syncing title={'Enable voice syncing with deep backend?'} value={deviceSaver} setValue={setDeviceSaver} />}
+                    />
+                    
+                    <Interval value={deviceInterval} onChange={setDeviceInterval} />
+                    <DeviceView interval={deviceInterval} />
+                    <Interval value={geolocationInterval} onChange={setGeolocationInterval} />
+                    <Syncing title={'Enable geolocation syncing with deep backend?'} value={geolocationSaver} setValue={setGeolocationSaver} />
+                    <GeolocationView interval={geolocationInterval} />
+                  </VoiceProvider>
+                </GeolocationProvider>
+              </DeviceProvider>
+            </SaverProvider>
+          </Box>
+        </AnimatePresence>
       </Box>
     </AnimatePresence>
   )
