@@ -4,7 +4,7 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-  Box, Button, Card, CardBody, CardHeader, CircularProgress, CircularProgressLabel, FormControl, FormLabel, HStack, Heading, Input, InputGroup, InputRightElement, List, ListIcon, ListItem, Select, SimpleGrid,
+  Box, Button, Card, CardBody, CardHeader, CircularProgress, CircularProgressLabel, FormControl, FormLabel, HStack, Heading, IconButton, Input, InputGroup, InputRightElement, List, ListIcon, ListItem, Select, SimpleGrid,
   Slider,
   SliderFilledTrack,
   SliderMark,
@@ -12,6 +12,7 @@ import {
   SliderTrack,
   Switch,
   Text,
+  useMediaQuery,
   useToast,
 } from '@chakra-ui/react';
 import { CheckCircleIcon, WarningIcon, SpinnerIcon, CheckIcon, TriangleDownIcon } from '@chakra-ui/icons'
@@ -49,6 +50,7 @@ import { EditorTextArea } from '@deep-foundation/deepcase/imports/editor/editor-
 import sortBy from 'lodash/sortBy';
 import reverse from 'lodash/reverse';
 import { deepEqual } from 'assert';
+import { AddIcon } from '@chakra-ui/icons'
 
 const { version: appVersion } = require('../package.json');
 const { version: importsVersion } = require('../node_modules/@deep-foundation/deepmemo-imports/package.json');
@@ -130,11 +132,19 @@ const InstallerView = React.memo(function InstallerView({}: {}) {
           Installer
         </Heading>
       </CardHeader>
-      <CardBody>
+      <CardBody sx={{pt: 0}}>
         <SimpleGrid columns={{sm: 1, md: 2}}>
           <Box>
-            {!installer?.installing ? <Button colorScheme={'blue'} onClick={() => installer.install()}>install</Button> : <Button disabled variant='outline'>{installer?.installing ? 'installing' : 'installed'}</Button>}
-            {<Button colorScheme={'blue'} onClick={() => installer.reset()}>reset</Button>}
+            <Box mb='0.5rem'
+              sx={{
+                '&>*:nth-child(1)': {
+                  mr: '0.5rem'
+                }
+              }}
+            >
+              {!installer?.installing ? <Button size='sm' colorScheme={'blue'} onClick={() => installer.install()}>install</Button> : <Button size='sm' disabled variant='outline'>{installer?.installing ? 'installing' : 'installed'}</Button>}
+              {<Button size='sm' colorScheme={'blue'} onClick={() => installer.reset()}>reset</Button>}
+            </Box>
             <List spacing={3}>
               <ListItem>
                 <ListIcon as={installer?.status ? CheckCircleIcon : WarningIcon} color={installer?.status ? 'green.500' : 'red.500'} />
@@ -186,10 +196,11 @@ const InstallerView = React.memo(function InstallerView({}: {}) {
               </ListItem>
               <ListItem>
                 <ListIcon as={installer?.['ApiKey']?.length ? CheckCircleIcon : WarningIcon} color={installer?.['ApiKey']?.length ? 'green.500' : 'red.500'} />
-                ApiKey ({installer?.['ApiKey']?.[0]?.value?.value || ''})
+                ApiKey 
+                <Box fontSize='xs'>({installer?.['ApiKey']?.[0]?.value?.value || ''})</Box>
                 <InputGroup size='md'>
                   <Input placeholder='Enter token for choosen model' value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
-                  <InputRightElement>
+                  <InputRightElement sx={{right: '0.3rem'}}>
                     <Button size='sm' onClick={async () => {
                       await installer.saveApiKey(apiKey);
                     }}>save</Button>
@@ -213,10 +224,11 @@ const InstallerView = React.memo(function InstallerView({}: {}) {
               </ListItem>
               <ListItem>
                 <ListIcon as={installer?.['TelegramToken']?.[0]?.value?.value ? CheckCircleIcon : WarningIcon} color={installer?.['TelegramToken']?.[0]?.value?.value ? 'green.500' : 'red.500'} />
-                TelegramToken ({installer?.['TelegramToken']?.[0]?.value?.value || ''})
+                TelegramToken 
+                <Box fontSize='xs'>({installer?.['TelegramToken']?.[0]?.value?.value || ''})</Box>
                 <InputGroup size='md'>
                   <Input placeholder='Enter Telegram Token for Deep.Memory chat bot' value={telegramToken} onChange={(e) => setTelegramToken(e.target.value)} />
-                  <InputRightElement>
+                  <InputRightElement sx={{right: '0.3rem'}}>
                     <Button size='sm' onClick={async () => {
                       await installer.saveDeepmemoryTelegramToken(telegramToken);
                     }}>save</Button>
@@ -226,18 +238,22 @@ const InstallerView = React.memo(function InstallerView({}: {}) {
               <ListItem>
                 <ListIcon as={installer?.['TelegramActive']?.length ? CheckCircleIcon : WarningIcon} color={installer?.['TelegramActive']?.length ? 'green.500' : 'red.500'} />
                 Telegram bot for Deep.Memory ({installer?.['TelegramActive']?.[0]?.id || ''})
-                <Button disabled={!!installer?.['TelegramActive']?.length} variant={!!installer?.['TelegramActive']?.length ? 'outline' : 'solid'} colorScheme={'blue'} onClick={() => installer.telegramDeepmemoryBotStatus(true)}>enable</Button>
-                <Button disabled={!installer?.['TelegramActive']?.length} variant={!installer?.['TelegramActive']?.length ? 'outline' : 'solid'} colorScheme={'blue'} onClick={() => installer.telegramDeepmemoryBotStatus(false)}>disable</Button>
+                <Box>
+                  <Button size='sm' sx={{mr: '0.5rem'}} disabled={!!installer?.['TelegramActive']?.length} variant={!!installer?.['TelegramActive']?.length ? 'outline' : 'solid'} colorScheme={'blue'} onClick={() => installer.telegramDeepmemoryBotStatus(true)}>enable</Button>
+                  <Button size='sm' disabled={!installer?.['TelegramActive']?.length} variant={!installer?.['TelegramActive']?.length ? 'outline' : 'solid'} colorScheme={'blue'} onClick={() => installer.telegramDeepmemoryBotStatus(false)}>disable</Button>
+                </Box>
               </ListItem>
               <ListItem>
                 <ListIcon as={installer?.['DeepmemoryActive']?.length ? CheckCircleIcon : WarningIcon} color={installer?.['DeepmemoryActive']?.length ? 'green.500' : 'red.500'} />
                 Deep.Memory ({installer?.['DeepmemoryActive']?.[0]?.id || ''})
-                <Button disabled={!!installer?.['DeepmemoryActive']?.length} variant={!!installer?.['DeepmemoryActive']?.length ? 'outline' : 'solid'} colorScheme={'blue'} onClick={() => installer.deepmemoryBotStatus(true)}>enable</Button>
-                <Button disabled={!installer?.['DeepmemoryActive']?.length} variant={!installer?.['DeepmemoryActive']?.length ? 'outline' : 'solid'} colorScheme={'blue'} onClick={() => installer.deepmemoryBotStatus(false)}>disable</Button>
+                <Box>
+                  <Button size='sm' sx={{mr: '0.5rem'}} disabled={!!installer?.['DeepmemoryActive']?.length} variant={!!installer?.['DeepmemoryActive']?.length ? 'outline' : 'solid'} colorScheme={'blue'} onClick={() => installer.deepmemoryBotStatus(true)}>enable</Button>
+                  <Button size='sm' disabled={!installer?.['DeepmemoryActive']?.length} variant={!installer?.['DeepmemoryActive']?.length ? 'outline' : 'solid'} colorScheme={'blue'} onClick={() => installer.deepmemoryBotStatus(false)}>disable</Button>
+                </Box>
               </ListItem>
               <ListItem>
                 <ListIcon as={installer?.['space'] ? CheckCircleIcon : WarningIcon} color={installer?.['space'] ? 'green.500' : 'red.500'} />
-                space ({installer?.['space']?.id || ''}) <Button disabled={!installer?.space} variant={!!installer?.space ? 'outline' : 'solid'} colorScheme={'blue'} onClick={() => installer.defineSpace()}>define</Button>
+                space ({installer?.['space']?.id || ''}) <Button size='sm' disabled={!installer?.space} variant={!!installer?.space ? 'outline' : 'solid'} colorScheme={'blue'} onClick={() => installer.defineSpace()}>define</Button>
               </ListItem>
             </List>
           </Box>
@@ -251,6 +267,7 @@ const InstallerView = React.memo(function InstallerView({}: {}) {
 const Graph = React.memo(function Graph({ linkId, query = {} }: { linkId: Id; query?: any }) {
   const deep = useDeep();
   const cyRef = useRef();
+  const down450 = useMediaQuery('(max-width: 450px)');
   const cytoViewportRef = useRefstarter<{ pan: { x: number; y: number; }; zoom: number }>();
   const { data: links = [] }: { data?: Link<Id>[] } = deep.useDeepSubscription({
     up: { parent_id: linkId || 0, tree_id: deep.idLocal('@deep-foundation/core', 'containTree') },
@@ -264,7 +281,7 @@ const Graph = React.memo(function Graph({ linkId, query = {} }: { linkId: Id; qu
     ...(query)
   });
   return <>
-    {!!linkId && <Box w={500} h={500} border={'1px'} rounded='md' position="relative">
+    {!!linkId && <Box sx={{w: down450 ? '100%' : 500, h: down450 ? '100%' : 500}} border={'1px'} rounded='md' position="relative">
       {deep?.linkId && <CytoGraph links={links} cyRef={cyRef} cytoViewportRef={cytoViewportRef}/>}
     </Box>}
   </>;
@@ -404,7 +421,7 @@ const TemplatesViewCore = React.memo(function TemplatesView({ }: { }) {
     }
   });
   return <>
-    <Box borderTop={'1px'} borderColor={'gray.300'}>
+    <Box>
       {templates.map(t => (<TemplateView key={t.id} template={t}/>))}
     </Box>
   </>;
@@ -413,8 +430,15 @@ const TemplatesViewCore = React.memo(function TemplatesView({ }: { }) {
 const TemplatesView = React.memo(function TemplatesView({ }: { }) {
   const deep = useDeep();
   return <>
-    <Heading>Templates
-      <Button
+    <Box sx={{
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'baseline',
+      justifyContent: 'space-between',
+      mb: '0.3rem'
+    }}>
+      <Heading>Templates</Heading>
+      <IconButton aria-label='adding template' icon={<AddIcon />} 
         disabled={!deep?.linkId}
         colorScheme={'blue'} variant={'solid'} size="sm"
         onClick={async () => {
@@ -422,15 +446,16 @@ const TemplatesView = React.memo(function TemplatesView({ }: { }) {
             type_id: await deep.id('@deep-foundation/chatgpt-azure-templates', 'Template'),
             string: { data: { value: `Ниже я приведу последние созданные ассоциативные связи в памяти, расскажи что ты думаешь об этой памяти? Что случилось за этот запомненный период? Какие ты можешь дать рекомендации?
 
-\${JSON.stringify((await deep.select({ order_by: { id: 'desc' }, limit: 10 })).data)}` } },
+  \${JSON.stringify((await deep.select({ order_by: { id: 'desc' }, limit: 10 })).data)}` } },
             in: { data: {
               type_id: deep.idLocal('@deep-foundation/core', 'Contain'),
               from_id: deep.linkId,
             } }
           });
         }}
-      >+</Button>
-    </Heading>
+      />
+    </Box>
+    <Box width={'100%'} height='0.03rem' bg={'gray.300'} />
     {!!deep?.linkId && <TemplatesViewCore/>}
   </>;
 });
@@ -438,10 +463,11 @@ const TemplatesView = React.memo(function TemplatesView({ }: { }) {
 const DeviceView = React.memo(function DeviceView({ interval }: { interval: number }) {
   const deep = useDeep();
   const device = useDevice();
+  const down450 = useMediaQuery('(max-width: 450px)'); 
   return <>
     <Heading>Device {device?.id ? <>{device?.id}</> : <>{'id not defined'}</>} <Loading factor={device} interval={interval}/></Heading>
     <SimpleGrid columns={{sm: 1, md: 2}}>
-      <Box><pre>{JSON.stringify(device, null, 2)}</pre></Box>
+      <Box sx={{fontSize: down450 ? '0.8rem' : 'inherit'}}><pre>{JSON.stringify(device, null, 2)}</pre></Box>
       {deep?.linkId && device?.id && <Graph linkId={device.id}/>}
     </SimpleGrid>
   </>;
@@ -452,7 +478,7 @@ const GeolocationView = React.memo(function GeolocationView({ interval }: { inte
   const geolocation = useGeolocation();
   return <>
     <Heading>Geolocation {geolocation?.position?.id ? <>{geolocation?.position?.id}</> : <>{'id not defined'}</>} <><Loading factor={geolocation.position} interval={interval}/></></Heading>
-    {!!geolocation.status ? <Button colorScheme={'red'} onClick={() => geolocation.stop()}>stop</Button> : <Button colorScheme={'blue'} onClick={() => geolocation.request()}>request</Button>}
+    {!!geolocation.status ? <Button size='sm' colorScheme={'red'} onClick={() => geolocation.stop()}>stop</Button> : <Button size='sm' colorScheme={'blue'} onClick={() => geolocation.request()}>request</Button>}
     <SimpleGrid columns={{sm: 1, md: 2}}>
       <Box><pre>{JSON.stringify(geolocation, null, 2)}</pre></Box>
       {deep?.linkId && geolocation?.position?.id && <Graph linkId={geolocation.position.id}/>}
@@ -465,7 +491,7 @@ const BackgroundGeolocationView = React.memo(function BackgroundGeolocationView(
   const geolocation = useBackgroundGeolocation();
   return <>
     <Heading>Background Geolocation {geolocation?.position?.id ? <>{geolocation?.position?.id}</> : <>{'id not defined'}</>}</Heading>
-    {!!geolocation.status ? <Button colorScheme={'red'} onClick={() => geolocation.stop()}>stop</Button> : <Button colorScheme={'blue'} onClick={() => geolocation.request()}>request</Button>}
+    {!!geolocation.status ? <Button size='sm' colorScheme={'red'} onClick={() => geolocation.stop()}>stop</Button> : <Button size='sm' colorScheme={'blue'} onClick={() => geolocation.request()}>request</Button>}
     <SimpleGrid columns={{sm: 1, md: 2}}>
       <Box><pre>{JSON.stringify(geolocation, null, 2)}</pre></Box>
       {deep?.linkId && geolocation?.position?.id && <Graph linkId={geolocation.position.id}/>}
@@ -560,15 +586,15 @@ const VoiceView = React.memo(function VoiceView() {
           const record = await voice.stop();
         }}>stop</Button>
         {voice.paused ? (
-          <Button onClick={() => voice.pause()}>pause</Button>
+          <Button size='sm' onClick={() => voice.pause()}>pause</Button>
         ) : (
-          <Button onClick={() => voice.resume()}>resume</Button>
+          <Button size='sm' onClick={() => voice.resume()}>resume</Button>
         )}
       </>) : (
-        <Button onClick={() => voice.start()}>start</Button>
+        <Button size='sm' onClick={() => voice.start()}>start</Button>
       )
     ) : (
-      <Button onClick={() => voice.request()}>request</Button>
+      <Button size='sm' onClick={() => voice.request()}>request</Button>
     )}
   </>;
 });
@@ -598,6 +624,17 @@ export function OnlyConnectedAndAdmin({ children }: { children: any }) {
 export function OnlyInstalled({ children }: { children: any }) {
   const deep = useDeep();
   const installer = useInstaller();
+  const [hydrated, setHydrated] = useState(false);
+
+  // hydration error problem solution
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  if (!hydrated) {
+    return null;
+  }
+
   return <>
     {deep?.linkId && installer?.status ? children : <Heading size="md">Deep.Memo unavailable, {!deep?.linkId ? 'deep not connected' : 'not installed'}.</Heading>}
   </>
@@ -661,12 +698,15 @@ export default function Page() {
                     <TemplatesView/>
                     <VoiceView/>
                     <Interval value={deviceInterval} onChange={setDeviceInterval}/>
+                    <Box w='100%' h='3rem' />
                     <Syncing title={'Enable voice syncing with deep backend?'} value={deviceSaver} setValue={setDeviceSaver}/>
                     <DeviceView interval={deviceInterval}/>
                     <Interval value={geolocationInterval} onChange={setGeolocationInterval}/>
+                    <Box w='100%' h='3rem' />
                     <Syncing title={'Enable geolocation syncing with deep backend?'} value={geolocationSaver} setValue={setGeolocationSaver}/>
                     <Syncing title={'Enable auto request foregraund geolocation?'} value={!geolocationManual} setValue={(v) => setGeolocationManual(!v)}/>
                     <GeolocationView interval={geolocationInterval}/>
+                    <Box w='100%' h='3rem' />
                     <Syncing title={'Enable background geolocation syncing with deep backend?'} value={backgroundgeolocationSaver} setValue={setBackgroundGeolocationSaver}/>
                     <Syncing title={'Enable auto request background geolocation?'} value={!backgroundGeolocationManual} setValue={(v) => setBackgroundGeolocationManual(!v)}/>
                     <BackgroundGeolocationView/>

@@ -35,7 +35,7 @@ export function Connection() {
   const [autoGuest, setAutoGuest] = useState(false);
 
   return (
-    <Card maxWidth={'100%'}>
+    <Card maxWidth={'100%'} m='1rem'>
       <CardHeader>
         <Heading>
           {t('connection')}
