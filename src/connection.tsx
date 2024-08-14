@@ -12,7 +12,7 @@ import { Discord } from "../imports/discord-logo";
 export function Connection() {
   const { t } = useTranslation();
   const deep = useDeep();
-  const { state, onPermission } = useAnimationContext();
+  const { permition, onPermission } = useAnimationContext();
   const control = useAnimationControls();
   const contentControl = useAnimationControls();
 
@@ -38,17 +38,17 @@ export function Connection() {
 
   const [autoGuest, setAutoGuest] = useState(false);
   useEffect(() => {
-    if (state === 'connection') {
+    if (permition === 'connection') {
       control.start("show");
       contentControl.start("show");
     } else {
       control.start("hide");
       contentControl.start("hide");
     }
-  }, [control, contentControl, state]);
+  }, [control, contentControl, permition]);
   return (<AnimatePresence>
       <Box 
-        key='1'
+        key='content'
         as={motion.div} 
         // onTapStart={(e) => {
         //   onPermission(); 
@@ -123,6 +123,7 @@ export function Connection() {
                 if(!_path || !_token) return;
                 setToken(_token);
                 setPath(_path);
+                console.log('permition', permition)
                 onPermission();
               }}
               width='100%'

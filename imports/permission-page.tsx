@@ -12,10 +12,10 @@ import { Syncing } from './syncing';
 import { DeviceView, GeolocationView, VoiceView } from './viewers';
 import { useLocalStore } from '@deep-foundation/store/local';
 import { useDeep } from '@deep-foundation/deeplinks/imports/client';
-import { variantsSliding } from '../src/animation-variants';
+import { variantsSliding, contentAnimation } from '../src/animation-variants';
 
 export const PermissionPage = memo(() => {
-  const { state } = useAnimationContext();
+  const { permition } = useAnimationContext();
   const { t } = useTranslation();
   const deep = useDeep();
   const toast = useToast();
@@ -26,6 +26,7 @@ export const PermissionPage = memo(() => {
   const [geolocationSaver, setGeolocationSaver] = useState(true);
   const [saver, setSaver] = useState<boolean>(false);
   const control = useAnimationControls();
+  const contentControl = useAnimationControls();
    // @ts-ignore
    if (typeof (window) === 'object') window.deep = deep;
    console.log('deep', deep);
@@ -36,17 +37,19 @@ export const PermissionPage = memo(() => {
    }, [deep]);
 
    useEffect(() => {
-    if (state === 'permissions') {
+    if (permition === 'permissions') {
       control.start("show");
+      contentControl.start("show");
     } else {
       control.start("hide");
+      contentControl.start("hide");
     }
-  }, [control, state]);
-  console.log('click', state);
+  }, [control, contentControl, permition]);
+  console.log('click', permition);
 
   return (<AnimatePresence>
       <Box 
-        key='2'
+        key='content'
         as={motion.div} 
         sx={{ 
           width: '100vw',
@@ -61,13 +64,15 @@ export const PermissionPage = memo(() => {
         variants={variantsSliding}
       >
         <AnimatePresence>
-
           <Box display='flex' justifyContent='center' flexDirection='column' w='100%' h='100%' p={4}
+            as={motion.div}
             sx={{
               '& > *:not(:last-child)': {
                 mb: '1rem',
               }
             }}
+            animate={contentControl}
+            variants={contentAnimation}
           >
             <Syncing title={'Enable syncing with deep backend?'} value={saver} setValue={setSaver} />
             <FormControl display='flex' alignItems='center'>

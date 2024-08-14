@@ -2,7 +2,7 @@ import { createContext, useState, useContext } from 'react';
 
 // Step 1: Define a type for the context value
 interface AnimationContextType {
-  state: string;
+  permition: string;
   onConnection: () => void;
   onPermission: () => void;
 }
@@ -11,20 +11,20 @@ interface AnimationContextType {
 const AnimationContext = createContext<AnimationContextType | undefined>(undefined);
 
 export const AnimationProvider = ({ children }: { children: React.ReactNode }) => {
-  const [state, setState] = useState('start');
+  const [permition, setPermition] = useState('start');
   const onConnection = () => {
     // Устанавливаем таймер на 3 секунды
     const timerId = setTimeout(() => {
-      setState('connection');
+      setPermition('connection');
       clearTimeout(timerId); // Очищаем таймер
     }, 10000);
   };
   const onPermission = () => {
-    setState('permissions')
+    setPermition('permissions')
   };
 
   return (
-    <AnimationContext.Provider value={{ state, onConnection, onPermission }}>
+    <AnimationContext.Provider value={{ permition, onConnection, onPermission }}>
       {children}
     </AnimationContext.Provider>
   );

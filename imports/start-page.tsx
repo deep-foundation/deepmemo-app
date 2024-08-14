@@ -6,7 +6,6 @@ import { useAnimationContext } from '../src/context';
 import { variantsSliding } from '../src/animation-variants';
 import { openSync } from 'fs';
 
-
 const transition = {
   type: "spring", stiffness: 300, damping: 30,
   duration: 1.5,
@@ -28,13 +27,15 @@ const variants = {
   })
 }
 export const StartPage = () => {
-  const { state, onConnection } = useAnimationContext();
+  const { permition, onConnection } = useAnimationContext();
   const control = useAnimationControls();
   const { colorMode } = useColorMode();
 
   useEffect(() => {
-    onConnection(); 
-    if (state === 'connection') {
+    console.log('permition', permition)
+    // onConnection(); 
+    console.log('permition', permition)
+    if (permition === 'connection') {
       control.start("hide");
       // control.start("show");
     } 
@@ -44,7 +45,7 @@ export const StartPage = () => {
 
   return (<AnimatePresence>
       <Box 
-        key='0'
+        key='content'
         as={motion.div} 
         sx={{ 
           width: '100vw',
@@ -64,6 +65,7 @@ export const StartPage = () => {
         custom={colorMode}
         animate={control}
         variants={variants}
+        onClick={() => onConnection()}
       >
         <Logo />
         <Box textStyle='smallText' sx={{ pos: 'absolute', bottom: 0 }}>Ⓒ Deep.Foundation</Box>
